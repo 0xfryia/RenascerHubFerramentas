@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Renascer — Hub de Ferramentas</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-page: #f4f6f0;
+      --bg-card: #ffffff;
+      --bg-card-hover: #f9f9f7;
+      --border: #e4e4dc;
+      --border-hover: #c0c0b8;
+      --border-divider: #ddddd5;
+      --text-primary: #1a1a18;
+      --text-secondary: #787870;
+      --text-muted: #aaaaaa;
+      --text-label: #888880;
+      --icon-blue-bg: #e8f1fd;
+      --icon-green-bg: #e0f5ec;
+      --tag-blue-bg: #deeafa;
+      --tag-blue-text: #1851a0;
+      --tag-green-bg: #d8f2e8;
+      --tag-green-text: #0d6649;
+      --toggle-bg: #e4e4dc;
+      --toggle-knob: #ffffff;
+    }
+
+    body.dark {
+      --bg-page: #141412;
+      --bg-card: #1e1e1c;
+      --bg-card-hover: #252522;
+      --border: #2e2e2a;
+      --border-hover: #484844;
+      --border-divider: #2a2a26;
+      --text-primary: #f0f0ec;
+      --text-secondary: #8a8a82;
+      --text-muted: #555550;
+      --text-label: #666660;
+      --icon-blue-bg: #1a2a40;
+      --icon-green-bg: #0e2a1e;
+      --tag-blue-bg: #162238;
+      --tag-blue-text: #7cb4f0;
+      --tag-green-bg: #0c2218;
+      --tag-green-text: #5ecfa0;
+      --toggle-bg: #3a3a36;
+      --toggle-knob: #f0f0ec;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg-page);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      transition: background 0.25s;
+    }
+
+    .page { width: 100%; max-width: 580px; }
+
+    /* Dark mode toggle */
+    .topbar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 1.5rem;
+    }
+
+    .toggle-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 5px 12px 5px 8px;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      color: var(--text-secondary);
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .toggle-btn:hover { border-color: var(--border-hover); color: var(--text-primary); }
+
+    .toggle-track {
+      width: 28px;
+      height: 16px;
+      border-radius: 8px;
+      background: var(--toggle-bg);
+      position: relative;
+      transition: background 0.2s;
+    }
+
+    .toggle-knob {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--toggle-knob);
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    body.dark .toggle-track { background: #2cb56e; }
+    body.dark .toggle-knob { transform: translateX(12px); }
+
+    /* Header */
+    .header { display: flex; align-items: center; gap: 16px; margin-bottom: 2.5rem; }
+
+    .logo {
+      width: 58px; height: 58px; border-radius: 16px;
+      background: linear-gradient(140deg, #1a6b45 0%, #2cb56e 100%);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 4px 16px rgba(26,107,69,0.3);
+    }
+    .logo svg { width: 30px; height: 30px; }
+
+    .header-text h1 {
+      font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 700;
+      color: var(--text-primary); line-height: 1.2;
+    }
+    .header-text p { font-size: 13px; color: var(--text-secondary); margin-top: 3px; }
+
+    /* Section */
+    .section { margin-bottom: 2rem; }
+
+    .section-label {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--text-label); margin-bottom: 10px;
+    }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border-divider); }
+
+    .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+    /* Cards */
+    .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    @media (max-width: 420px) { .cards { grid-template-columns: 1fr; } }
+
+    .card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 1.1rem 1.2rem;
+      text-decoration: none; display: flex; flex-direction: column; gap: 6px;
+      position: relative; overflow: hidden;
+      transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s, background 0.25s;
+    }
+    .card:hover {
+      border-color: var(--border-hover); background: var(--bg-card-hover);
+      box-shadow: 0 4px 18px rgba(0,0,0,0.12); transform: translateY(-2px);
+    }
+    .card:hover .arrow { opacity: 1; transform: translate(2px, -2px); }
+
+    .card-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center; margin-bottom: 4px;
+      transition: background 0.25s;
+    }
+    .icon-blue { background: var(--icon-blue-bg); }
+    .icon-green { background: var(--icon-green-bg); }
+
+    .card-name {
+      font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 600;
+      color: var(--text-primary); line-height: 1.3;
+    }
+    .card-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.45; }
+
+    .card-tag {
+      display: inline-flex; align-items: center;
+      font-size: 10px; font-weight: 600; padding: 3px 9px;
+      border-radius: 20px; width: fit-content; margin-top: 4px; letter-spacing: 0.03em;
+      transition: background 0.25s, color 0.25s;
+    }
+    .tag-blue { background: var(--tag-blue-bg); color: var(--tag-blue-text); }
+    .tag-green { background: var(--tag-green-bg); color: var(--tag-green-text); }
+
+    .arrow {
+      position: absolute; top: 12px; right: 14px; font-size: 14px;
+      color: var(--text-muted); opacity: 0; transition: opacity 0.15s, transform 0.15s;
+    }
+
+    .footer {
+      text-align: center; font-size: 12px; color: var(--text-muted);
+      margin-top: 2rem; padding-top: 1.2rem; border-top: 1px solid var(--border-divider);
+      transition: color 0.25s, border-color 0.25s;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <div class="topbar">
+      <button class="toggle-btn" onclick="document.body.classList.toggle('dark')" aria-label="Alternar modo escuro">
+        <div class="toggle-track"><div class="toggle-knob"></div></div>
+        Modo escuro
+      </button>
+    </div>
+
+    <div class="header">
+      <div class="header-text">
+        <h1>Renascer — Hub de Ferramentas</h1>
+        <p>Acesso centralizado a todos os sistemas</p>
+      </div>
+    </div>
+
+    <!-- Seção Auditoria -->
+    <div class="section">
+      <div class="section-label">
+        <span class="dot" style="background:#378ADD;"></span>
+        Auditoria
+      </div>
+
+      <div class="cards">
+        <a class="card" href="https://suporterhc.github.io/DashboardAuditoria/" target="_blank">
+          <span class="arrow">↗</span>
+          <div class="card-icon icon-blue">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <rect x="2" y="2" width="14" height="14" rx="3" stroke="#378ADD" stroke-width="1.5"/>
+              <path d="M5 9h8M5 6h8M5 12h5" stroke="#378ADD" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <p class="card-name">Dashboard Auditoria</p>
+          <p class="card-desc">Painel de controle e indicadores de auditoria</p>
+          <span class="card-tag tag-blue">Auditoria</span>
+        </a>
+
+        <a class="card" href="https://gemini.google.com/share/7d3d964481dc" target="_blank">
+          <span class="arrow">↗</span>
+          <div class="card-icon icon-blue">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <circle cx="9" cy="9" r="6.5" stroke="#378ADD" stroke-width="1.5"/>
+              <path d="M9 5.5v3.5l2.5 2.5" stroke="#378ADD" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <p class="card-name">Regras Plano Servir</p>
+          <p class="card-desc">Consulta de regras e diretrizes do Plano Servir</p>
+          <span class="card-tag tag-blue">Auditoria</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Seção Geral -->
+    <div class="section">
+      <div class="section-label">
+        <span class="dot" style="background:#1d9e75;"></span>
+        Geral — Todos os setores
+      </div>
+
+      <div class="cards">
+        <a class="card" href="https://renascer-veiculos.web.app/" target="_blank">
+          <span class="arrow">↗</span>
+          <div class="card-icon icon-green">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <rect x="2" y="7" width="14" height="7" rx="2" stroke="#1d9e75" stroke-width="1.5"/>
+              <path d="M4 7 L5.5 3.5 L12.5 3.5 L14 7" stroke="#1d9e75" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="5.5" cy="14" r="1.5" fill="#1d9e75"/>
+              <circle cx="12.5" cy="14" r="1.5" fill="#1d9e75"/>
+            </svg>
+          </div>
+          <p class="card-name">Renascer Veículos</p>
+          <p class="card-desc">Sistema principal de gestão de veículos</p>
+          <span class="card-tag tag-green">Geral</span>
+        </a>
+
+        <a class="card" href="https://suporterhc.github.io/Fluxos/" target="_blank">
+          <span class="arrow">↗</span>
+          <div class="card-icon icon-green">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <circle cx="4" cy="4" r="2" stroke="#1d9e75" stroke-width="1.5"/>
+              <circle cx="14" cy="9" r="2" stroke="#1d9e75" stroke-width="1.5"/>
+              <circle cx="4" cy="14" r="2" stroke="#1d9e75" stroke-width="1.5"/>
+              <path d="M6 4.5 L12 8 M12 10 L6 13.5" stroke="#1d9e75" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <p class="card-name">Fluxos</p>
+          <p class="card-desc">Processos e fluxogramas operacionais</p>
+          <span class="card-tag tag-green">Geral</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="footer">
+      Renascer RHC &mdash; Sistemas internos centralizados
+    </div>
+
+  </div>
+</body>
+</html>
