@@ -6,15 +6,16 @@
   <title>Renascer — Hub de Ferramentas</title>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
   <style>
+    /* Reset básico */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg-page: #f4f6f0;
+      --bg-page: #f0f7f4;
       --bg-card: #ffffff;
-      --bg-card-hover: #f9f9f7;
-      --border: #e4e4dc;
-      --border-hover: #c0c0b8;
-      --border-divider: #ddddd5;
+      --bg-card-hover: #f9fdfb;
+      --border: #dde8e3;
+      --border-hover: #b0cec4;
+      --border-divider: #d5e4df;
       --text-primary: #1a1a18;
       --text-secondary: #787870;
       --text-muted: #aaaaaa;
@@ -25,17 +26,17 @@
       --tag-blue-text: #1851a0;
       --tag-green-bg: #d8f2e8;
       --tag-green-text: #0d6649;
-      --toggle-bg: #e4e4dc;
+      --toggle-bg: #cde0d9;
       --toggle-knob: #ffffff;
     }
 
     body.dark {
-      --bg-page: #141412;
-      --bg-card: #1e1e1c;
-      --bg-card-hover: #252522;
-      --border: #2e2e2a;
-      --border-hover: #484844;
-      --border-divider: #2a2a26;
+      --bg-page: #0f1613;
+      --bg-card: #1a201e;
+      --bg-card-hover: #202826;
+      --border: #263028;
+      --border-hover: #3e4e48;
+      --border-divider: #222e28;
       --text-primary: #f0f0ec;
       --text-secondary: #8a8a82;
       --text-muted: #555550;
@@ -58,10 +59,38 @@
       align-items: center;
       justify-content: center;
       padding: 2rem 1rem;
-      transition: background 0.25s;
+      transition: background 0.35s;
+      position: relative;
+      overflow-x: hidden;
     }
 
-    .page { width: 100%; max-width: 580px; }
+    /* Efeito de Gradiente no fundo */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 15% 20%, rgba(44,181,110,0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 45% at 85% 75%, rgba(55,138,221,0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 35% at 70% 10%, rgba(44,181,110,0.06) 0%, transparent 60%);
+      transition: opacity 0.35s;
+    }
+
+    body.dark::before {
+      background:
+        radial-gradient(ellipse 60% 50% at 15% 20%, rgba(44,181,110,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 45% at 85% 75%, rgba(55,138,221,0.05) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 35% at 70% 10%, rgba(44,181,110,0.04) 0%, transparent 60%);
+    }
+
+    .page {
+      width: 100%;
+      max-width: 580px;
+      position: relative;
+      z-index: 1;
+    }
 
     .topbar {
       display: flex;
@@ -69,6 +98,7 @@
       margin-bottom: 1.5rem;
     }
 
+    /* Botão Toggle Dark Mode */
     .toggle-btn {
       display: flex;
       align-items: center;
@@ -109,23 +139,31 @@
     body.dark .toggle-track { background: #2cb56e; }
     body.dark .toggle-knob { transform: translateX(12px); }
 
-    .header { display: flex; align-items: center; gap: 16px; margin-bottom: 2.5rem; }
-
-    .logo {
-      width: 58px; height: 58px; border-radius: 16px;
-      background: linear-gradient(140deg, #1a6b45 0%, #2cb56e 100%);
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-      box-shadow: 0 4px 16px rgba(26,107,69,0.3);
+    /* Cabeçalho e Logo */
+    .header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 2.5rem;
     }
-    .logo svg { width: 30px; height: 30px; }
 
-    .header-text h1 {
-      font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 700;
-      color: var(--text-primary); line-height: 1.2;
+    .logo-img {
+      height: 52px;
+      width: auto;
+      display: block;
+      transition: opacity 0.3s;
+      /* Correção para contornos e transparência */
+      border: none;
+      outline: none;
+      background: transparent;
     }
-    .header-text p { font-size: 13px; color: var(--text-secondary); margin-top: 3px; }
 
+    .logo-light { display: block; }
+    .logo-dark  { display: none; }
+
+    body.dark .logo-light { display: none; }
+    body.dark .logo-dark  { display: block; }
+
+    /* Seções */
     .section { margin-bottom: 2rem; }
 
     .section-label {
@@ -137,6 +175,7 @@
 
     .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
 
+    /* Grid de Cards */
     .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     @media (max-width: 420px) { .cards { grid-template-columns: 1fr; } }
 
@@ -149,7 +188,7 @@
     }
     .card:hover {
       border-color: var(--border-hover); background: var(--bg-card-hover);
-      box-shadow: 0 4px 18px rgba(0,0,0,0.12); transform: translateY(-2px);
+      box-shadow: 0 4px 18px rgba(0,0,0,0.10); transform: translateY(-2px);
     }
     .card:hover .arrow { opacity: 1; transform: translate(2px, -2px); }
 
@@ -191,6 +230,7 @@
 <body>
   <div class="page">
 
+    <!-- Topbar com Switch de Tema -->
     <div class="topbar">
       <button class="toggle-btn" onclick="document.body.classList.toggle('dark')" aria-label="Alternar modo escuro">
         <div class="toggle-track"><div class="toggle-knob"></div></div>
@@ -198,11 +238,10 @@
       </button>
     </div>
 
+    <!-- Header com Logos Dinâmicas -->
     <div class="header">
-      <div class="header-text">
-        <h1>Renascer — Hub de Ferramentas</h1>
-        <p>Acesso centralizado a todos os sistemas</p>
-      </div>
+      <img class="logo-img logo-light" src="assets/img/img_azul_piscina.png" alt="Renascer Homecare" />
+      <img class="logo-img logo-dark"  src="assets/img/img_branca.png" alt="Renascer Homecare" />
     </div>
 
     <!-- Seção Auditoria -->
@@ -279,7 +318,6 @@
           <span class="card-tag tag-green">Geral</span>
         </a>
 
-        <!-- NOVO CARD: Tabela de Preços UNIMED -->
         <a class="card" href="https://script.google.com/a/macros/homecarerenascer.com.br/s/AKfycbwGl22z8nGNfCa4McJMlmovGhtXA_wTGoXQLoq3qbGtX5qRqF6u1Ga_zGT7h1ICxZ3GiA/exec" target="_blank">
           <span class="arrow">↗</span>
           <div class="card-icon icon-green">
